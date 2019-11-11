@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ombi
+  labels:
+    app: ombi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ombi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ombi
+    spec:
+      initContainers:
+      - name: init-priveleges-config
+        image: busybox
+        command:
+        - chown
+        - -R
+        - 2580:2580
+        - /config
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      containers:
+      - name: ombi
+        image: jmeritt/ombi
+        resources:
+          requests:
+            cpu: "25m"
+            memory: "128Mi"
+          limits:
+            cpu: "50m"
+            memory: "256Mi"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: config
+          mountPath: /data
+      volumes:
+      - name: config
+        emptyDir: {}
