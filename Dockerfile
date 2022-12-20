@@ -1,10 +1,10 @@
-FROM jmeritt/debian-htpc
+FROM jmeritt/ubuntu-htpc
 
-RUN apt-get install -y curl gnupg
+RUN apt-get update && apt-get install -y curl sqlite3 apt-transport-https gnupg icu-devtools
    
 
-RUN curl https://repo.ombi.turd.me/pubkey.txt | apt-key add - && \
-    echo "deb [arch=amd64,armhf] http://repo.ombi.turd.me/stable/ jessie main" |  tee "/etc/apt/sources.list.d/ombi.list" && \
+RUN echo "deb https://apt.ombi.app/develop jessie main" | tee /etc/apt/sources.list.d/ombi.list && \
+    curl -sSL https://apt.ombi.app/pub.key | apt-key add - && \
     apt-get update && \
     apt-get install -y ombi
 

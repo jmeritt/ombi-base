@@ -1,3 +1,3 @@
 #!/bin/bash
-docker build -t jmeritt/ombi .
+docker buildx build --platform linux/amd64 -t jmeritt/ombi .
 docker push jmeritt/ombi
